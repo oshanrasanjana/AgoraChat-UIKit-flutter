@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../agora_chat_uikit.dart';
 import '../../widgets/chat_image_show_widget/chat_image_show_widget.dart';
@@ -130,7 +131,7 @@ class ChatMessagesView extends StatefulWidget {
 
 class _ChatMessagesViewState extends State<ChatMessagesView> {
   final ImagePicker _picker = ImagePicker();
-  final Record _audioRecorder = Record();
+  final  _audioRecorder = AudioRecorder();
   final AudioPlayer _player = AudioPlayer();
   final FocusNode _focusNode = FocusNode();
   int _recordDuration = 0;
@@ -264,16 +265,15 @@ class _ChatMessagesViewState extends State<ChatMessagesView> {
       ],
     );
 
-    content = WillPopScope(
+    content = PopScope(
         child: content,
-        onWillPop: () async {
+        onPopInvokedWithResult: (b,d) async {
           if (_focusNode.hasFocus) {
             _focusNode.unfocus();
           }
           _playingMessage = null;
           await _player.stop();
           await _stopRecord();
-          return true;
         });
 
     return content;
@@ -495,7 +495,10 @@ class _ChatMessagesViewState extends State<ChatMessagesView> {
     }).then((value) async {
       if (value == true) {
         _startTimer();
-        await _audioRecorder.start();
+        final directory = await getApplicationDocumentsDirectory();
+        final path = '${directory.path}/record_${DateTime.now().millisecondsSinceEpoch}.amr';
+        await _audioRecorder.start(RecordConfig(
+        ), path:path);
       } else {
         if (!isRequest) {
           widget.onError?.call(ChatUIKitError.toChatError(

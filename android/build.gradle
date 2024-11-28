@@ -23,6 +23,7 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 33
+    namespace "com.ease.em_chat_uikit"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

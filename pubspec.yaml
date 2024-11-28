@@ -21,6 +21,7 @@ dependencies:
   record: ^5.2.0
   audioplayers: ^6.1.0
   agora_chat_sdk: ^1.1.1
+  path_provider: ^2.1.5
 
 dev_dependencies:
   flutter_test:
