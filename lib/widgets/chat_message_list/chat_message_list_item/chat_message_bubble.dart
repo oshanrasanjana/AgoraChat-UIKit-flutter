@@ -65,18 +65,19 @@ class ChatMessageBubble extends StatelessWidget {
       child: Padding(
         padding: padding ?? const EdgeInsets.fromLTRB(12, 8, 12, 8),
         child: Row(
+          mainAxisSize: MainAxisSize.min,
+          
+       crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            childBuilder(context),
+            Flexible(flex: 1, child: childBuilder(context)),
             if (showTime) ...[
-              SizedBox(width: 8),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: Text(
+              SizedBox(width: 12),
+               Text(
                   _timeFromTimeStamp(message.serverTime),
                   style: timeStyle ??
                       const TextStyle(color: Colors.grey, fontSize: 14),
                 ),
-              ),
+              
             ]
           ],
         ),
@@ -86,7 +87,7 @@ class ChatMessageBubble extends StatelessWidget {
     if (!isLeft) {
       content = Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+       crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           content,
           SizedBox(height: 4),
