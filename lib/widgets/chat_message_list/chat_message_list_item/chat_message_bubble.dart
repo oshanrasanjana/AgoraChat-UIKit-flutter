@@ -17,6 +17,8 @@ class ChatMessageBubble extends StatelessWidget {
     this.bubbleColor,
     this.padding,
     this.maxWidth,
+    this.timeStyle,
+    this.showTime = true,
   });
 
   final double? maxWidth;
@@ -32,6 +34,8 @@ class ChatMessageBubble extends StatelessWidget {
   final WidgetBuilder? unreadFlagBuilder;
   final Color? bubbleColor;
   final EdgeInsets? padding;
+  final TextStyle? timeStyle;
+  final bool showTime;
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +63,21 @@ class ChatMessageBubble extends StatelessWidget {
       constraints: boxConstraints,
       child: Padding(
         padding: padding ?? const EdgeInsets.fromLTRB(12, 8, 12, 8),
-        child: childBuilder(context),
+        child: Row(
+          children: [
+            Expanded(child: childBuilder(context)),
+            if (showTime) ...[
+              SizedBox(
+                width: 8,
+              ),
+              Text(
+                TimeTool.timeStrByMs(message.serverTime),
+                style: timeStyle ??
+                    const TextStyle(color: Colors.grey, fontSize: 14),
+              ),
+            ]
+          ],
+        ),
       ),
     );
 
@@ -119,7 +137,7 @@ class ChatMessageBubble extends StatelessWidget {
     }
 
     content = Padding(
-      padding: EdgeInsets.fromLTRB(15, 15, isLeft ? 7.5 : 15, 15),
+      padding: EdgeInsets.fromLTRB(12, 4, isLeft ? 8 : 12, 4),
       child: content,
     );
 
@@ -130,27 +148,27 @@ class ChatMessageBubble extends StatelessWidget {
       child: content,
     );
 
-    if (model.needTime) {
-      content = Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: SizedBox(
-                height: 20,
-                child: Text(
-                  TimeTool.timeStrByMs(message.serverTime),
-                  style: ChatUIKit.of(context)?.theme.messagesListItemTsStyle ??
-                      const TextStyle(color: Colors.grey, fontSize: 14),
-                ),
-              ),
-            ),
-          ),
-          content
-        ],
-      );
-    }
+    // if (model.needTime) {
+    //   content = Column(
+    //     crossAxisAlignment: CrossAxisAlignment.stretch,
+    //     children: [
+    //       Center(
+    //         child: Padding(
+    //           padding: const EdgeInsets.only(top: 10),
+    //           child: SizedBox(
+    //             height: 20,
+    //             child: Text(
+    //               TimeTool.timeStrByMs(message.serverTime),
+    //               style: ChatUIKit.of(context)?.theme.messagesListItemTsStyle ??
+    //                   const TextStyle(color: Colors.grey, fontSize: 14),
+    //             ),
+    //           ),
+    //         ),
+    //       ),
+    //       content
+    //     ],
+    //   );
+    // }
     return content;
   }
 }
