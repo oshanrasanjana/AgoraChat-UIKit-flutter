@@ -19,6 +19,8 @@ class ChatMessageListItem extends StatelessWidget {
     this.bubbleColor,
     this.bubblePadding,
     this.unreadFlagBuilder,
+    this.showTime,
+    this.timeStyle,
   });
 
   final ChatMessageListItemModel model;
@@ -31,6 +33,8 @@ class ChatMessageListItem extends StatelessWidget {
   final Color? bubbleColor;
   final EdgeInsets? bubblePadding;
   final WidgetBuilder? unreadFlagBuilder;
+  final bool? showTime;
+  final TextStyle? timeStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +54,8 @@ class ChatMessageListItem extends StatelessWidget {
       avatarBuilder: avatarBuilder,
       nicknameBuilder: nicknameBuilder,
       onResendTap: onResendTap,
+      timeStyle: timeStyle,
+      showTime: showTime ?? true,
     );
 
     return ret;

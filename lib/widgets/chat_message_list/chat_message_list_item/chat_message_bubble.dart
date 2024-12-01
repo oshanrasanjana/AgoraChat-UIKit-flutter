@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart' as intl;
 
 import '../../../agora_chat_uikit.dart';
 
@@ -65,21 +66,37 @@ class ChatMessageBubble extends StatelessWidget {
         padding: padding ?? const EdgeInsets.fromLTRB(12, 8, 12, 8),
         child: Row(
           children: [
-            Expanded(child: childBuilder(context)),
+            childBuilder(context),
             if (showTime) ...[
-              SizedBox(
-                width: 8,
-              ),
-              Text(
-                TimeTool.timeStrByMs(message.serverTime),
-                style: timeStyle ??
-                    const TextStyle(color: Colors.grey, fontSize: 14),
+              SizedBox(width: 8),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Text(
+                  _timeFromTimeStamp(message.serverTime),
+                  style: timeStyle ??
+                      const TextStyle(color: Colors.grey, fontSize: 14),
+                ),
               ),
             ]
           ],
         ),
       ),
     );
+
+    if (!isLeft) {
+      content = Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          content,
+          SizedBox(height: 4),
+          Align(
+            alignment: Alignment.topRight,
+            child: ChatMessageStatusWidget(message, onTap: onResendTap),
+          ),
+        ],
+      );
+    }
 
     List<Widget> insideBubbleWidgets = [];
 
@@ -110,10 +127,6 @@ class ChatMessageBubble extends StatelessWidget {
     insideBubbleWidgets.add(Flexible(flex: 1, child: content));
     insideBubbleWidgets.add(SizedBox(width: isLeft ? 0 : 10.4));
 
-    if (!isLeft) {
-      insideBubbleWidgets
-          .add(ChatMessageStatusWidget(message, onTap: onResendTap));
-    }
     content = Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       textDirection: isLeft ? TextDirection.ltr : TextDirection.rtl,
@@ -171,4 +184,9 @@ class ChatMessageBubble extends StatelessWidget {
     // }
     return content;
   }
+}
+
+String _timeFromTimeStamp(int timestamp) {
+  DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
+  return intl.DateFormat('HH:mm').format(dateTime);
 }
