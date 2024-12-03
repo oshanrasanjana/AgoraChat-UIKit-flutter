@@ -22,16 +22,16 @@ rootProject.allprojects {
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 33
+    compileSdkVersion 35
     namespace "com.ease.em_chat_uikit"
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
     }
 
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 22
     }
 
     dependencies {
