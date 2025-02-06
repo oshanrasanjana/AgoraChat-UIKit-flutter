@@ -5,19 +5,17 @@ import 'package:example/messages_page.dart';
 import 'package:flutter/material.dart';
 
 class ChatConfig {
-  static const String appKey = "";
-  static const String userId = "";
-  static const String agoraToken = '';
+  static const String appKey = "611251717#1443754";
+  static const String userId = "jhbzxchjzxcjhmbfvjhdfjg";
+  static const String agoraToken =
+      '007eJxTYLifMEVx0mT+PVphbCe0Cx1lJ13/s3qbfpb+x6QHsz5y9U5SYEhMTk4yMDFOM0hKsjRJtTSzTE60NEg0NUmzMDYxMkg1ST7kkd4QyMjwpzOTkZGBlYERCEF8FQbTNLMkA3NjA93ElMREXUPD1DTdpNREY11L01Rjo2RLMwtDkyQAlrEoKQ==';
 }
 
 void main() async {
   assert(ChatConfig.appKey.isNotEmpty,
       "You need to configure AppKey information first.");
   WidgetsFlutterBinding.ensureInitialized();
-  final options = ChatOptions(
-    appKey: ChatConfig.appKey,
-    autoLogin: false,
-  );
+  final options = ChatOptions(appKey: ChatConfig.appKey);
   await ChatClient.getInstance.init(options);
   runApp(const MyApp());
 }
@@ -28,13 +26,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      builder: (context, child) {
-        // ChatUIKit widget at the top of the widget
-        return ChatUIKit(child: child!);
-      },
+      theme: ThemeData.dark(),
+      // builder: (context, child) {
+      //   // ChatUIKit widget at the top of the widget
+      //   return ChatUIKit(child: child!);
+      // },
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: const MyHomePage(title: 'Flutter Demo'),
@@ -54,7 +50,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   ScrollController scrollController = ScrollController();
   ChatConversation? conversation;
-  String _chatId = "";
+  String _chatId = "jhbzxchjzxcjhmbfvjhdfjg	";
   final List<String> _logText = [];
   @override
   Widget build(BuildContext context) {
