@@ -42,7 +42,7 @@ class ChatEmojiWidget extends StatelessWidget {
     );
   }
 
-  _getEmojiItemContainer(int index) {
+  ChatExpression _getEmojiItemContainer(int index) {
     var emoji = ChatEmojiData.emojiList[index];
     return ChatExpression(emoji, bigSizeRatio, emojiClicked);
   }
@@ -70,7 +70,7 @@ class ChatExpression extends StatelessWidget {
     );
     return TextButton(
       style: ButtonStyle(
-        padding: MaterialStateProperty.all(
+        padding: WidgetStateProperty.all(
           EdgeInsets.all(bigSizeRatio),
         ),
       ),

@@ -355,7 +355,7 @@ class _ChatMessagesViewState extends State<ChatMessagesView> {
   }
 
   void _openFilePicker() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    FilePickerResult? result = await FilePicker.pickFiles();
     if (result != null) {
       PlatformFile? file = result.files.first;
       _sendFile(file);

@@ -44,7 +44,7 @@ class _ChatSwipeWidgetState extends State<ChatSwipeWidget>
     updateItem();
   }
 
-  updateItem() {
+  void updateItem() {
     maxLeftDragDistance = 0;
     maxRightDragDistance = 0;
 
@@ -134,6 +134,7 @@ class _ChatSwipeWidgetState extends State<ChatSwipeWidget>
     Widget content = SlideTransition(
       textDirection: TextDirection.rtl,
       position: slideAnimation,
+      // ignore: deprecated_member_use
       child: WillPopScope(
         child: Stack(
           children: [

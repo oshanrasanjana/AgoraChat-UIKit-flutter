@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class ChatImageLoader {
   static Image loadImage(
-    name, {
+    String name, {
     double? width,
     double? height,
     BoxFit fit = BoxFit.fill,

@@ -187,6 +187,7 @@ class ChatMessageListController extends ChatBaseController {
 
   /// Deletes all messages in the current conversation. Only the local database is deleted.
   /// If the message roaming interface is called, the deleted message can still be retrieved.
+  // ignore: deprecated_member_use
   /// current conversation see [ChatMessagesList]. message roaming see [ChatManager.fetchHistoryMessages].
   Future<void> deleteAllMessages() async {
     await chatClient.chatManager.deleteConversation(conversation.id);
@@ -572,11 +573,10 @@ class _ChatMessagesListState extends State<ChatMessagesList>
       ],
     );
 
-    content = WillPopScope(
-      onWillPop: () async {
+    content = PopScope(
+      onPopInvokedWithResult: (_,res) async {
         widget.conversation.markAllMessagesAsRead();
         ChatUIKit.of(context)?.conversationsController?.loadAllConversations();
-        return true;
       },
       child: content,
     );

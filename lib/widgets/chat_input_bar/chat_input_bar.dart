@@ -443,12 +443,12 @@ class _ChatInputBarState extends State<ChatInputBar> {
     );
   }
 
-  _onPointerDown(PointerDownEvent event) {
+  void _onPointerDown(PointerDownEvent event) {
     setState(() => _voiceTouchType = _ChatVoiceOffsetType.dragInside);
     widget.recordTouchDown?.call();
   }
 
-  _onPointerMove(PointerMoveEvent event) {
+  void _onPointerMove(PointerMoveEvent event) {
     RenderBox renderBox =
         _gestureKey.currentContext?.findRenderObject() as RenderBox;
     Offset offset = event.localPosition;
@@ -472,7 +472,7 @@ class _ChatInputBarState extends State<ChatInputBar> {
     }
   }
 
-  _onPointerUp(PointerUpEvent event) {
+  void _onPointerUp(PointerUpEvent event) {
     RenderBox renderBox =
         _gestureKey.currentContext?.findRenderObject() as RenderBox;
     Offset offset = event.localPosition;

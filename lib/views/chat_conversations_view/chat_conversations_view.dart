@@ -416,11 +416,10 @@ class ChatConversationsViewState extends State<ChatConversationsView> {
       );
     }
 
-    content = WillPopScope(
+    content = PopScope(
         child: content,
-        onWillPop: () async {
+        onPopInvokedWithResult: (_, res) async {
           ChatUIKit.of(context)?.conversationsController = null;
-          return true;
         });
 
     return content;

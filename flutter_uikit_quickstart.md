@@ -257,9 +257,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       _signIn();
                     },
                     style: ButtonStyle(
-                      foregroundColor: MaterialStateProperty.all(Colors.white),
+                      foregroundColor: WidgetStateProperty.all(Colors.white),
                       backgroundColor:
-                          MaterialStateProperty.all(Colors.lightBlue),
+                          WidgetStateProperty.all(Colors.lightBlue),
                     ),
                     child: const Text("SIGN IN"),
                   ),
@@ -271,9 +271,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       _signOut();
                     },
                     style: ButtonStyle(
-                      foregroundColor: MaterialStateProperty.all(Colors.white),
+                      foregroundColor: WidgetStateProperty.all(Colors.white),
                       backgroundColor:
-                          MaterialStateProperty.all(Colors.lightBlue),
+                          WidgetStateProperty.all(Colors.lightBlue),
                     ),
                     child: const Text("SIGN OUT"),
                   ),
@@ -297,9 +297,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     pushToChatPage(_chatId);
                   },
                   style: ButtonStyle(
-                    foregroundColor: MaterialStateProperty.all(Colors.white),
+                    foregroundColor: WidgetStateProperty.all(Colors.white),
                     backgroundColor:
-                        MaterialStateProperty.all(Colors.lightBlue),
+                        WidgetStateProperty.all(Colors.lightBlue),
                   ),
                   child: const Text("START CHAT"),
                 )
