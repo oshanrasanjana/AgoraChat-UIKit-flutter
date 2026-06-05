@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:agora_chat_uikit/internal/chat_method.dart';
+import 'package:flutter/rendering.dart';
 
 import '../../agora_chat_uikit.dart';
 
@@ -540,7 +541,7 @@ class _ChatMessagesListState extends State<ChatMessagesList>
     Widget content = CustomScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
       controller: _scrollController,
-      cacheExtent: 1500,
+      scrollCacheExtent: ScrollCacheExtent.pixels(1500),
       reverse: true,
       slivers: [
         ChatMessageSliver(

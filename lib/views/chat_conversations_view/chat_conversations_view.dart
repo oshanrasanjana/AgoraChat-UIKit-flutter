@@ -1,14 +1,13 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 import '../../agora_chat_uikit.dart';
 import '../../internal/chat_method.dart';
 import '../../widgets/chat_swipe_widget/chat_swipe_widget.dart';
 
 class ChatConversationsController extends ChatBaseController {
-  ChatConversationsController({
-    super.key,
-  });
+  ChatConversationsController({super.key});
 
   final ValueNotifier<List<ChatConversation>> _listValueNotifier =
       ValueNotifier([]);
@@ -26,9 +25,9 @@ class ChatConversationsController extends ChatBaseController {
   set conversationList(List<ChatConversation> list) {
     _listValueNotifier.value = List.from(list);
 
-    ChatClient.getInstance.chatManager
-        .getUnreadMessageCount()
-        .then((value) => _totalUnreadCountNotifier.value = value);
+    ChatClient.getInstance.chatManager.getUnreadMessageCount().then(
+      (value) => _totalUnreadCountNotifier.value = value,
+    );
   }
 
   /// Registers the conversation list change event.
@@ -75,8 +74,8 @@ class ChatConversationsController extends ChatBaseController {
 
   /// load all conversations and refresh the list.
   Future<void> loadAllConversations() async {
-    List<ChatConversation> list =
-        await ChatClient.getInstance.chatManager.loadAllConversations();
+    List<ChatConversation> list = await ChatClient.getInstance.chatManager
+        .loadAllConversations();
     conversationList = await sortHandle?.call(list) ?? list;
   }
 
@@ -98,11 +97,14 @@ class ChatConversationsController extends ChatBaseController {
   /// Param [includeMessage] Whether to delete messages at the same time.
   Future<void> deleteAllConversations({bool includeMessage = true}) async {
     List<ChatConversation> list = conversationList;
-    await Future.wait(list
-        .map((element) => ChatClient.getInstance.chatManager.deleteConversation(
-              element.id,
-              deleteMessages: includeMessage,
-            ))).then((value) => conversationList = []);
+    await Future.wait(
+      list.map(
+        (element) => ChatClient.getInstance.chatManager.deleteConversation(
+          element.id,
+          deleteMessages: includeMessage,
+        ),
+      ),
+    ).then((value) => conversationList = []);
     if (includeMessage) {
       _totalUnreadCountNotifier.value = 0;
     }
@@ -116,8 +118,9 @@ class ChatConversationsController extends ChatBaseController {
 
   /// Mark a conversation as read
   Future<void> markConversationAsRead(String conversationId) async {
-    int index =
-        conversationList.indexWhere((element) => element.id == conversationId);
+    int index = conversationList.indexWhere(
+      (element) => element.id == conversationId,
+    );
     if (index != -1) {
       ChatConversation tmp = conversationList[index];
       await tmp.markAllMessagesAsRead();
@@ -195,7 +198,7 @@ class ChatConversationsView extends StatefulWidget {
     this.backgroundWidgetWhenListEmpty,
     this.enablePullReload = false,
   }) : conversationsController =
-            conversationsController ?? ChatConversationsController();
+           conversationsController ?? ChatConversationsController();
 
   /// The conversations controller.
   final ChatConversationsController conversationsController;
@@ -325,7 +328,10 @@ class ChatConversationsViewState extends State<ChatConversationsView> {
         restorationId: widget.restorationId,
         keyboardDismissBehavior: widget.keyboardDismissBehavior,
         dragStartBehavior: widget.dragStartBehavior,
-        cacheExtent: widget.cacheExtent,
+
+        scrollCacheExtent: widget.cacheExtent == null
+            ? null
+            : ScrollCacheExtent.pixels(widget.cacheExtent!),
         shrinkWrap: widget.shrinkWrap,
         controller: widget.scrollController,
         primary: widget.primary,
@@ -349,7 +355,8 @@ class ChatConversationsViewState extends State<ChatConversationsView> {
                             }
                           },
                           backgroundColor: Colors.red,
-                          text: AppLocalizations.of(context)?.uikitDelete ??
+                          text:
+                              AppLocalizations.of(context)?.uikitDelete ??
                               "Delete",
                           confirmAction: (_) async {
                             List<ChatBottomSheetItem> list = [
@@ -364,7 +371,7 @@ class ChatConversationsViewState extends State<ChatConversationsView> {
                                 onTap: () async {
                                   return Navigator.of(context).pop(false);
                                 },
-                              )
+                              ),
                             ];
 
                             return await showChatBottomSheet(
@@ -379,11 +386,16 @@ class ChatConversationsViewState extends State<ChatConversationsView> {
                       child: Container(
                         color: Colors.white,
                         child: ChatConversationListTile(
-                          avatar: widget.avatarBuilder
-                                  ?.call(context, conversation) ??
+                          avatar:
+                              widget.avatarBuilder?.call(
+                                context,
+                                conversation,
+                              ) ??
                               ChatImageLoader.defaultAvatar(size: 50),
-                          title: widget.nicknameBuilder
-                              ?.call(context, conversation),
+                          title: widget.nicknameBuilder?.call(
+                            context,
+                            conversation,
+                          ),
                           conversation: conversation,
                           onTap: (conversation) {
                             widget.onItemTap?.call(conversation);
@@ -396,13 +408,14 @@ class ChatConversationsViewState extends State<ChatConversationsView> {
               findChildIndexCallback: (key) {
                 final ValueKey<String> valueKey = key as ValueKey<String>;
                 int index = _tmpList.indexWhere(
-                    (conversation) => conversation.id == valueKey.value);
+                  (conversation) => conversation.id == valueKey.value,
+                );
 
                 return index > -1 ? index : null;
               },
               childCount: _tmpList.length,
             ),
-          )
+          ),
         ],
       ),
     );
@@ -417,10 +430,11 @@ class ChatConversationsViewState extends State<ChatConversationsView> {
     }
 
     content = PopScope(
-        child: content,
-        onPopInvokedWithResult: (_, res) async {
-          ChatUIKit.of(context)?.conversationsController = null;
-        });
+      child: content,
+      onPopInvokedWithResult: (_, res) async {
+        ChatUIKit.of(context)?.conversationsController = null;
+      },
+    );
 
     return content;
   }
