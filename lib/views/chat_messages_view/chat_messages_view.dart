@@ -67,8 +67,8 @@ class ChatMessagesView extends StatefulWidget {
     this.needDismissInputWidget,
     this.inputBarMoreActionsOnTap,
     super.key,
-  }) : messageListViewController = messageListViewController ??
-            ChatMessageListController(conversation);
+  }) : messageListViewController =
+           messageListViewController ?? ChatMessageListController(conversation);
 
   final Widget? background;
 
@@ -131,7 +131,7 @@ class ChatMessagesView extends StatefulWidget {
 
 class _ChatMessagesViewState extends State<ChatMessagesView> {
   final ImagePicker _picker = ImagePicker();
-  final  _audioRecorder = AudioRecorder();
+  final _audioRecorder = AudioRecorder();
   final AudioPlayer _player = AudioPlayer();
   final FocusNode _focusNode = FocusNode();
   int _recordDuration = 0;
@@ -240,7 +240,9 @@ class _ChatMessagesViewState extends State<ChatMessagesView> {
               onTextFieldChanged: (text) {},
               onSendBtnTap: (text) {
                 var msg = ChatMessage.createTxtSendMessage(
-                    targetId: widget.conversation.id, content: text);
+                  targetId: widget.conversation.id,
+                  content: text,
+                );
                 msg.chatType = ChatType.values[widget.conversation.type.index];
                 ChatMessage? willSend;
                 if (widget.willSendMessage != null) {
@@ -254,27 +256,28 @@ class _ChatMessagesViewState extends State<ChatMessagesView> {
 
                 widget.messageListViewController.sendMessage(willSend);
               },
-            )
+            ),
       ],
     );
 
     content = Stack(
       children: [
         Positioned.fill(child: content),
-        Positioned.fill(child: Center(child: _maskWidget()))
+        Positioned.fill(child: Center(child: _maskWidget())),
       ],
     );
 
     content = PopScope(
-        child: content,
-        onPopInvokedWithResult: (b,d) async {
-          if (_focusNode.hasFocus) {
-            _focusNode.unfocus();
-          }
-          _playingMessage = null;
-          await _player.stop();
-          await _stopRecord();
-        });
+      child: content,
+      onPopInvokedWithResult: (b, d) async {
+        if (_focusNode.hasFocus) {
+          _focusNode.unfocus();
+        }
+        _playingMessage = null;
+        await _player.stop();
+        await _stopRecord();
+      },
+    );
 
     return content;
   }
@@ -329,37 +332,42 @@ class _ChatMessagesViewState extends State<ChatMessagesView> {
       }
     } else {
       showChatBottomSheet(
-          context: context, items: widget.moreItems ?? _moreItems());
+        context: context,
+        items: widget.moreItems ?? _moreItems(),
+      );
     }
   }
 
   List<ChatBottomSheetItem> _moreItems() {
     return [
       ChatBottomSheetItem.normal(
-          AppLocalizations.of(context)?.uikitCamera ?? 'Camera',
-          onTap: () async {
-        Navigator.of(context).pop();
-        _takePhoto();
-      }),
+        AppLocalizations.of(context)?.uikitCamera ?? 'Camera',
+        onTap: () async {
+          Navigator.of(context).pop();
+          _takePhoto();
+        },
+      ),
       ChatBottomSheetItem.normal(
-          AppLocalizations.of(context)?.uikitAlbum ?? 'Album', onTap: () async {
-        Navigator.of(context).pop();
-        _openImagePicker();
-      }),
+        AppLocalizations.of(context)?.uikitAlbum ?? 'Album',
+        onTap: () async {
+          Navigator.of(context).pop();
+          _openImagePicker();
+        },
+      ),
       ChatBottomSheetItem.normal(
-          AppLocalizations.of(context)?.uikitFiles ?? 'Files', onTap: () async {
-        Navigator.of(context).pop();
-        _openFilePicker();
-      }),
+        AppLocalizations.of(context)?.uikitFiles ?? 'Files',
+        onTap: () async {
+          Navigator.of(context).pop();
+          _openFilePicker();
+        },
+      ),
     ];
   }
 
   void _openFilePicker() async {
-    FilePickerResult? result = await FilePicker.pickFiles();
-    if (result != null) {
-      PlatformFile? file = result.files.first;
-      _sendFile(file);
-    }
+    List<PlatformFile>? result = await FilePicker.pickFiles();
+    PlatformFile? file = result.first;
+    _sendFile(file);
   }
 
   void _takePhoto() async {
@@ -369,8 +377,12 @@ class _ChatMessagesViewState extends State<ChatMessagesView> {
         _sendImage(photo.path);
       }
     } catch (e) {
-      widget.onError?.call(ChatUIKitError.toChatError(
-          ChatUIKitError.noPermission, "no take photo permission"));
+      widget.onError?.call(
+        ChatUIKitError.toChatError(
+          ChatUIKitError.noPermission,
+          "no take photo permission",
+        ),
+      );
     }
   }
 
@@ -381,8 +393,12 @@ class _ChatMessagesViewState extends State<ChatMessagesView> {
         _sendImage(image.path);
       }
     } catch (e) {
-      widget.onError?.call(ChatUIKitError.toChatError(
-          ChatUIKitError.noPermission, "no image library permission"));
+      widget.onError?.call(
+        ChatUIKitError.toChatError(
+          ChatUIKitError.noPermission,
+          "no image library permission",
+        ),
+      );
     }
   }
 
@@ -391,12 +407,13 @@ class _ChatMessagesViewState extends State<ChatMessagesView> {
       ChatMessage fileMsg = ChatMessage.createFileSendMessage(
         targetId: widget.conversation.id,
         filePath: file.path!,
-        fileSize: file.size,
+        fileSize: await file.length(),
         displayName: file.name,
       );
       fileMsg.chatType = ChatType.values[widget.conversation.type.index];
-      widget.messageListViewController
-          .sendMessage(widget.willSendMessage?.call(fileMsg) ?? fileMsg);
+      widget.messageListViewController.sendMessage(
+        widget.willSendMessage?.call(fileMsg) ?? fileMsg,
+      );
     }
   }
 
@@ -407,23 +424,25 @@ class _ChatMessagesViewState extends State<ChatMessagesView> {
 
     bool hasSize = false;
     File file = File(path);
-    Image.file(file)
-        .image
+    Image.file(file).image
         .resolve(const ImageConfiguration())
-        .addListener(ImageStreamListener((info, synchronousCall) {
-      if (!hasSize) {
-        hasSize = true;
-        ChatMessage msg = ChatMessage.createImageSendMessage(
-          targetId: widget.conversation.id,
-          filePath: path,
-          width: info.image.width.toDouble(),
-          height: info.image.height.toDouble(),
-          fileSize: file.sizeInBytes,
+        .addListener(
+          ImageStreamListener((info, synchronousCall) {
+            if (!hasSize) {
+              hasSize = true;
+              ChatMessage msg = ChatMessage.createImageSendMessage(
+                targetId: widget.conversation.id,
+                filePath: path,
+                width: info.image.width.toDouble(),
+                height: info.image.height.toDouble(),
+                fileSize: file.sizeInBytes,
+              );
+              widget.messageListViewController.sendMessage(
+                widget.willSendMessage?.call(msg) ?? msg,
+              );
+            }
+          }),
         );
-        widget.messageListViewController
-            .sendMessage(widget.willSendMessage?.call(msg) ?? msg);
-      }
-    }));
   }
 
   Future<void> _sendVoice(String path) async {
@@ -435,8 +454,9 @@ class _ChatMessagesViewState extends State<ChatMessagesView> {
       duration: _recordDuration,
       displayName: displayName,
     );
-    widget.messageListViewController
-        .sendMessage(widget.willSendMessage?.call(msg) ?? msg);
+    widget.messageListViewController.sendMessage(
+      widget.willSendMessage?.call(msg) ?? msg,
+    );
   }
 
   Future<void> _voiceBubblePressed(ChatMessage message) async {
@@ -453,9 +473,13 @@ class _ChatMessagesViewState extends State<ChatMessagesView> {
     await widget.conversation.markMessageAsRead(message.msgId);
     message.hasRead = true;
     // ignore: use_build_context_synchronously
-    Navigator.of(context).push(MaterialPageRoute(builder: (ctx) {
-      return ChatImageShowWidget(message);
-    }));
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) {
+          return ChatImageShowWidget(message);
+        },
+      ),
+    );
     return Future.value();
   }
 
@@ -468,11 +492,13 @@ class _ChatMessagesViewState extends State<ChatMessagesView> {
     await _player
         .play(DeviceFileSource(body.localPath))
         .onError((error, stackTrace) => {});
-    _player.onPlayerComplete.first.whenComplete(() {
-      if (_playingMessage != null) {
-        _stopVoice();
-      }
-    }).onError((error, stackTrace) {});
+    _player.onPlayerComplete.first
+        .whenComplete(() {
+          if (_playingMessage != null) {
+            _stopVoice();
+          }
+        })
+        .onError((error, stackTrace) {});
   }
 
   Future<void> _stopVoice() async {
@@ -488,24 +514,33 @@ class _ChatMessagesViewState extends State<ChatMessagesView> {
     // });
     bool isRequest = false;
     Future(() async {
-      return await _audioRecorder.hasPermission();
-    }).timeout(const Duration(milliseconds: 500), onTimeout: () {
-      isRequest = true;
-      return false;
-    }).then((value) async {
-      if (value == true) {
-        _startTimer();
-        final directory = await getApplicationDocumentsDirectory();
-        final path = '${directory.path}/record_${DateTime.now().millisecondsSinceEpoch}.amr';
-        await _audioRecorder.start(RecordConfig(
-        ), path:path);
-      } else {
-        if (!isRequest) {
-          widget.onError?.call(ChatUIKitError.toChatError(
-              ChatUIKitError.noPermission, 'no record permission'));
-        } else {}
-      }
-    });
+          return await _audioRecorder.hasPermission();
+        })
+        .timeout(
+          const Duration(milliseconds: 500),
+          onTimeout: () {
+            isRequest = true;
+            return false;
+          },
+        )
+        .then((value) async {
+          if (value == true) {
+            _startTimer();
+            final directory = await getApplicationDocumentsDirectory();
+            final path =
+                '${directory.path}/record_${DateTime.now().millisecondsSinceEpoch}.amr';
+            await _audioRecorder.start(RecordConfig(), path: path);
+          } else {
+            if (!isRequest) {
+              widget.onError?.call(
+                ChatUIKitError.toChatError(
+                  ChatUIKitError.noPermission,
+                  'no record permission',
+                ),
+              );
+            } else {}
+          }
+        });
   }
 
   Future<void> _stopRecord([bool send = true]) async {
@@ -533,8 +568,12 @@ class _ChatMessagesViewState extends State<ChatMessagesView> {
       isExists = file.existsSync();
       if (isExists) {
         if (_recordDuration < 1) {
-          widget.onError?.call(ChatUIKitError.toChatError(
-              ChatUIKitError.recordTimeTooShort, "record time too short"));
+          widget.onError?.call(
+            ChatUIKitError.toChatError(
+              ChatUIKitError.recordTimeTooShort,
+              "record time too short",
+            ),
+          );
           await file.delete();
           return;
         }
@@ -544,11 +583,16 @@ class _ChatMessagesViewState extends State<ChatMessagesView> {
     }
     bool permission = await _audioRecorder.hasPermission();
     if (permission) {
-      widget.onError?.call(ChatUIKitError.toChatError(
-          ChatUIKitError.recordError, 'record error'));
+      widget.onError?.call(
+        ChatUIKitError.toChatError(ChatUIKitError.recordError, 'record error'),
+      );
     } else {
-      widget.onError?.call(ChatUIKitError.toChatError(
-          ChatUIKitError.noPermission, 'no record permission'));
+      widget.onError?.call(
+        ChatUIKitError.toChatError(
+          ChatUIKitError.noPermission,
+          'no record permission',
+        ),
+      );
     }
   }
 
