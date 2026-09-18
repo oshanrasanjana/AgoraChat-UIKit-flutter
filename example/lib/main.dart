@@ -15,7 +15,7 @@ void main() async {
   assert(ChatConfig.appKey.isNotEmpty,
       "You need to configure AppKey information first.");
   WidgetsFlutterBinding.ensureInitialized();
-  final options = ChatOptions(appKey: ChatConfig.appKey);
+  final options = ChatOptions.withAppKey(ChatConfig.appKey);
   await ChatClient.getInstance.init(options);
   runApp(const MyApp());
 }
@@ -120,8 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         pushToChatPage(_chatId);
                       },
                       style: ButtonStyle(
-                        foregroundColor:
-                            WidgetStateProperty.all(Colors.white),
+                        foregroundColor: WidgetStateProperty.all(Colors.white),
                         backgroundColor:
                             WidgetStateProperty.all(Colors.lightBlue),
                       ),
@@ -133,8 +132,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         pushToCustomChatPage(_chatId);
                       },
                       style: ButtonStyle(
-                        foregroundColor:
-                            WidgetStateProperty.all(Colors.white),
+                        foregroundColor: WidgetStateProperty.all(Colors.white),
                         backgroundColor:
                             WidgetStateProperty.all(Colors.lightBlue),
                       ),
